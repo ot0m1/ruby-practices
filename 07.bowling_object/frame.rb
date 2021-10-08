@@ -29,8 +29,8 @@ class Frame
       divided_shots
     end
 
-    def sum_next_first_two_shots(next_frame, after_next_frame)
-      summing_shots = next_frame.to_a << after_next_frame.first_shot
+    def sum_next_first_two_shots(frame, next_frame)
+      summing_shots = frame.to_a << next_frame.first_shot
       summing_shots.compact.slice(0, 2).map(&:numerate).sum
     end
   end
