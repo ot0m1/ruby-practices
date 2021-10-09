@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
-require 'io/console'
-
 class Rendering
   COLUMN_NUMBER = 3
 
   def initialize(params, files)
-    @width = IO.console.winsize[1]
     @params = params
     @files = files
   end
