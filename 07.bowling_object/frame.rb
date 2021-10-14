@@ -30,17 +30,17 @@ class Frame
     end
 
     def sum_next_first_two_shots(frame, next_frame)
-      summing_shots = frame.to_a << next_frame.first_shot
+      summing_shots = frame.shots << next_frame.first_shot
       summing_shots.compact.slice(0, 2).map(&:numerate).sum
     end
   end
 
-  def to_a
-    [first_shot, @second_shot, @third_shot]
+  def shots
+    [first_shot, @second_shot, @third_shot].compact
   end
 
   def sum
-    to_a.compact.map(&:numerate).sum
+    shots.map(&:numerate).sum
   end
 
   def strike?
