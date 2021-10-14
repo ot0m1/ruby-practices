@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 class Game
-  def initialize(frames)
-    @frames = frames
+  def initialize(command_line_argment)
+    throwings = command_line_argment.split(',')
+    shots = throwings.map { |throwing| Shot.new(throwing) }
+    divided_shots = Frame.divide(shots)
+    @frames = divided_shots.map { |divided_shot| Frame.new(*divided_shot) }
   end
 
   def score
