@@ -42,4 +42,12 @@ class Frame
   def sum
     to_a.compact.map(&:numerate).sum
   end
+
+  def strike?
+    first_shot.numerate == 10
+  end
+
+  def spare?
+    sum == 10
+  end
 end
