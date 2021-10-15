@@ -48,6 +48,6 @@ class Frame
   end
 
   def spare?
-    sum == 10
+    first_shot.numerate != 10 && sum == 10
   end
 end
