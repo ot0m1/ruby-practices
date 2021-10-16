@@ -13,7 +13,7 @@ class Rendering
   private
 
   def render_short
-    ajusted_files = @file_collection.ajusted_files
+    ajusted_files = @file_collection.ajustted_files
 
     if ajusted_files.length <= @file_collection.max_column_length
       ajusted_files.join(' ')
