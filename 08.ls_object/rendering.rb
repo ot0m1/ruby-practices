@@ -1,58 +1,26 @@
 # frozen_string_literal: true
 
 class Rendering
-  MAX_COLUMN_LENGTH = 3
-
-  def initialize(params, files)
-    @params = params
-    @files = files
+  def initialize
+    @params = Parameter.new.params
+    @file_collection = FileCollecter.new(@params)
+    @files = @file_collection.files
   end
 
   def output
-    result = @params['l'] ? render_long : render_short
-    puts result
+    puts @params['l'] ? render_long : render_short
   end
 
   private
 
   def render_short
-    max_file_name_count = @files.map(&:size).max
-    ajusted_files = adjust_to_max_file_name_count(@files, max_file_name_count)
+    ajusted_files = @file_collection.ajusted_files
 
-    if ajusted_files.length <= MAX_COLUMN_LENGTH
+    if ajusted_files.length <= @file_collection.max_column_length
       ajusted_files.join(' ')
     else
-      tabulate(ajusted_files, max_file_name_count)
+      @file_collection.tabulate(ajusted_files)
     end
-  end
-
-  def adjust_to_max_file_name_count(files, max_file_name_count)
-    files.map do |file|
-      file.ljust(max_file_name_count)
-    end
-  end
-
-  def tabulate(files, max_file_name_count)
-    row_count = (files.count.to_f / MAX_COLUMN_LENGTH).ceil
-    transposed_files = safe_transpose(files.each_slice(row_count).to_a)
-    format_table(transposed_files, max_file_name_count)
-  end
-
-  def safe_transpose(files)
-    files[0].zip(*files[1..-1])
-  end
-
-  def format_table(files, max_file_name_count)
-    files.map do |file|
-      render_short_format_row(file, max_file_name_count)
-    end.join("\n")
-  end
-
-  def render_short_format_row(files, max_file_path_count)
-    files.map do |file|
-      basename = file || ''
-      basename.ljust(max_file_path_count + 1)
-    end.join.rstrip
   end
 
   def render_long
