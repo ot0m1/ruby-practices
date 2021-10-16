@@ -21,6 +21,20 @@ class FileCollecter
     format_table(transposed_files, max_file_name_size_count)
   end
 
+  def make_long_format_body
+    analysed_data = analyse_data
+    max_sizes = %i[nlink user group size mtime].map do |key|
+      find_max_size(analysed_data, key)
+    end
+    analysed_data.map do |data|
+      format_row(data, max_sizes)
+    end
+  end
+
+  def block_total
+    analyse_data.sum { |data| data[:blocks] }
+  end
+
   private
 
   def max_file_name_size_count
@@ -48,5 +62,25 @@ class FileCollecter
       basename = file || ''
       basename.ljust(max_file_path_count + 1)
     end.join.rstrip
+  end
+
+  def analyse_data
+    FileAnalyser.new(@files).analyse
+  end
+
+  def find_max_size(analysed_data, key)
+    analysed_data.map { |data| data[key].size }.max
+  end
+
+  def format_row(data, max_sizes)
+    [
+      data[:type_and_mode],
+      "  #{data[:nlink].rjust(max_sizes[0])}",
+      " #{data[:user].ljust(max_sizes[1])}",
+      "  #{data[:group].ljust(max_sizes[2])}",
+      "  #{data[:size].rjust(max_sizes[3])}",
+      " #{data[:mtime].rjust(max_sizes[4])}",
+      " #{data[:name]}"
+    ].join
   end
 end
