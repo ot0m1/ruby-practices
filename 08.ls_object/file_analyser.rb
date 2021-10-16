@@ -17,7 +17,6 @@ class FileAnalyser
 
   def build_data(file)
     {
-      # type_and_mode: "#{file.file_type}#{file.to_symbolic_notation}",
       type_and_mode: file.type_and_mode,
       nlink: file.nlink,
       user: file.user,
