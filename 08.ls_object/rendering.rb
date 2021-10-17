@@ -14,16 +14,11 @@ class Rendering
 
   def render_short
     ajusted_files = @file_collection.ajustted_files
-
-    if ajusted_files.length <= @file_collection.max_column_length
-      ajusted_files.join(' ')
-    else
-      @file_collection.tabulate(ajusted_files)
-    end
+    @file_collection.tabulate(ajusted_files)
   end
 
   def render_long
-    head = "total #{@file_collection.block_total}"
+    head = @file_collection.make_long_format_head
     body = @file_collection.make_long_format_body
     [head, *body].join("\n")
   end

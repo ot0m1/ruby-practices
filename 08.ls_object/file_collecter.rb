@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 class FileCollecter
-  attr_reader :max_column_length
-
   MAX_COLUMN_LENGTH = 3
 
   def initialize(params)
     row_files = params['a'] ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
     @files = params['r'] ? row_files.sort.reverse : row_files.sort
-    @max_column_length = MAX_COLUMN_LENGTH
-    @analysed_data = analyse_data if params['l']
+    @analysed_files = FileAnalyser.new(@files) if params['l']
   end
 
   def ajustted_files
@@ -19,22 +16,22 @@ class FileCollecter
   end
 
   def tabulate(ajusted_files)
-    row_count = (ajusted_files.count.to_f / max_column_length).ceil
+    row_count = (ajusted_files.count.to_f / MAX_COLUMN_LENGTH).ceil
     transposed_files = safe_transpose(ajusted_files.each_slice(row_count).to_a)
     format_table(transposed_files, max_file_name_size_count)
   end
 
   def make_long_format_body
     max_sizes = %i[nlink user group size mtime].map do |key|
-      find_max_size(key)
+      @analysed_files.find_max_size(key)
     end
-    @analysed_data.map do |data|
-      format_row(data, max_sizes)
+    @analysed_files.data.map do |datum|
+      @analysed_files.format_row(datum, max_sizes)
     end
   end
 
-  def block_total
-    @analysed_data.sum { |data| data[:blocks] }
+  def make_long_format_head
+    "total #{@analysed_files.block_total}"
   end
 
   private
@@ -58,25 +55,5 @@ class FileCollecter
       basename = file || ''
       basename.ljust(max_file_path_count + 1)
     end.join.rstrip
-  end
-
-  def analyse_data
-    FileAnalyser.new(@files).analyse
-  end
-
-  def find_max_size(key)
-    @analysed_data.map { |data| data[key].size }.max
-  end
-
-  def format_row(data, max_sizes)
-    [
-      data[:type_and_mode],
-      "  #{data[:nlink].rjust(max_sizes[0])}",
-      " #{data[:user].ljust(max_sizes[1])}",
-      "  #{data[:group].ljust(max_sizes[2])}",
-      "  #{data[:size].rjust(max_sizes[3])}",
-      " #{data[:mtime].rjust(max_sizes[4])}",
-      " #{data[:name]}"
-    ].join
   end
 end

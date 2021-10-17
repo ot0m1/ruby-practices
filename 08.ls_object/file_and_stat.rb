@@ -29,7 +29,7 @@ class FileAndStat
   end
 
   # Convert the last modified time to a string conforming to mac's ls
-  def to_long_format_date
+  def long_format_date
     now_date = Date.today
     last_update_date = @stat.mtime.to_date
     diff_month = now_date.year * 12 + now_date.month - last_update_date.year * 12 - last_update_date.month
