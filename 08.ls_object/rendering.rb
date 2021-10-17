@@ -15,8 +15,7 @@ class Rendering
   private
 
   def render_short
-    ajusted_files = @file_collection.ajustted_files
-    tabulate(ajusted_files)
+    tabulate(@file_collection.ajustted_files)
   end
 
   def render_long
