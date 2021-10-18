@@ -15,7 +15,14 @@ class Rendering
   private
 
   def render_short
-    tabulate(@file_collection.ajustted_files)
+    ajusted_files = @file_collection.ajustted_files
+    row_count = (ajusted_files.count.to_f / MAX_COLUMN_LENGTH).ceil
+    transposed_files = safe_transpose(ajusted_files.each_slice(row_count).to_a)
+    max_file_name_size_count = @file_collection.max_file_name_size_count
+
+    transposed_files.map do |file|
+      render_short_format_row(file, max_file_name_size_count)
+    end.join("\n")
   end
 
   def render_long
@@ -24,20 +31,8 @@ class Rendering
     [head, *body].join("\n")
   end
 
-  def tabulate(ajusted_files)
-    row_count = (ajusted_files.count.to_f / MAX_COLUMN_LENGTH).ceil
-    transposed_files = safe_transpose(ajusted_files.each_slice(row_count).to_a)
-    format_table(transposed_files, @file_collection.max_file_name_size_count)
-  end
-
   def safe_transpose(files)
     files[0].zip(*files[1..-1])
-  end
-
-  def format_table(files, max_file_name_size_count)
-    files.map do |file|
-      render_short_format_row(file, max_file_name_size_count)
-    end.join("\n")
   end
 
   def render_short_format_row(files, max_file_path_count)
