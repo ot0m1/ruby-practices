@@ -28,17 +28,17 @@ class FileAndStat
     "#{file_type}#{to_symbolic_notation}"
   end
 
-  # Convert the last modified time to a string conforming to mac's ls
-  def long_format_date
+  def nlink
+    @stat.nlink.to_s
+  end
+
+  def mtime
+    # Convert the last modified time to a string conforming to mac's ls
     now_date = Date.today
     last_update_date = @stat.mtime.to_date
     diff_month = now_date.year * 12 + now_date.month - last_update_date.year * 12 - last_update_date.month
 
     @stat.mtime.strftime("%-m %e #{diff_month >= 6 ? ' %-Y' : '%R'}")
-  end
-
-  def nlink
-    @stat.nlink.to_s
   end
 
   def user

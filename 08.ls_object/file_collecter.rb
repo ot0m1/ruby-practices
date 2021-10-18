@@ -12,13 +12,13 @@ class FileCollecter
       file.ljust(max_file_name_size_count)
     end
   end
-  
+
   def make_long_format_body
     max_sizes = %i[nlink user group size mtime].map do |key|
       @analysed_files.find_max_size(key)
     end
-    @analysed_files.data.map do |datum|
-      @analysed_files.format_row(datum, max_sizes)
+    @analysed_files.files.map do |file|
+      @analysed_files.format_row(file, max_sizes)
     end
   end
 
