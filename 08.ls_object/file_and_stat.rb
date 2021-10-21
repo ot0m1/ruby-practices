@@ -57,6 +57,18 @@ class FileAndStat
     @stat.blocks
   end
 
+  def format_row(max_sizes)
+    [
+      type_and_mode,
+      "  #{nlink.rjust(max_sizes[0])}",
+      " #{user.ljust(max_sizes[1])}",
+      "  #{group.ljust(max_sizes[2])}",
+      "  #{size.rjust(max_sizes[3])}",
+      " #{mtime.rjust(max_sizes[4])}",
+      " #{name}"
+    ].join
+  end
+
   private
 
   def file_type
